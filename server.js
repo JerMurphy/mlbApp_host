@@ -72,8 +72,8 @@ app.get('*', function (req, res, next) {
 });
 
 
-// app.listen(config.port)
-app.listen(5000, function() {
+const port = process.env.PORT || 5000;
+app.listen(port, function() {
     console.log('Listening on port 5000 ');
 });
 
