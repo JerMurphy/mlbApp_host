@@ -57,6 +57,7 @@ app.post('/leagueLeaders', function(req,res){
             homeruns: _.orderBy(statList, ['homeruns'],['desc']).slice(0,5),
             str: _.orderBy(statList, ['str'],['desc']).slice(0,5),
         }
+        console.log(final);
         res.send(final);
     })
 });
