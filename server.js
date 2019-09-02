@@ -61,6 +61,60 @@ app.post('/leagueLeaders', function(req,res){
     })
 });
 
+app.post('/hittingStats', function(req,res){
+    var stats = req.body;
+    console.log(stats);
+    var final = {
+        plateData: [],
+        hitData:{
+            values: [],
+            hitObj: []
+        }
+    };
+
+    _.forEach(stats, function(year){
+        final.plateData.push(
+            [{key: 'Hits', value: year.stat.hits},{key: 'Strikeouts', value: year.stat.strikeOuts}, {key: 'Walks', value: year.stat.baseOnBalls},{key: 'Ground Outs', value: year.stat.groundOuts},{key: 'Fly Outs', value: year.stat.airOuts}]
+        )
+        final.hitData.values.push([{key: 'Singles', value: year.stat.hits-year.stat.doubles-year.stat.triples-year.stat.homeRuns},{key: 'Doubles', value: year.stat.doubles}, {key: 'Triples', value: year.stat.triples},{key: 'Home Runs', value: year.stat.homeRuns}])
+        final.hitData.hitObj.push({
+            single: (parseInt(year.stat.hits-year.stat.doubles-year.stat.triples-year.stat.homeRuns)/parseInt(year.stat.hits)*100).toFixed(0),
+            double: (parseInt(year.stat.doubles)/parseInt(year.stat.hits)*100).toFixed(0),
+            triple: (parseInt(year.stat.triples)/parseInt(year.stat.hits)*100).toFixed(0),
+            hr: (parseInt(year.stat.homeRuns)/parseInt(year.stat.hits)*100).toFixed(0)
+        })
+    });
+    console.log(final);
+    res.send(final);
+});
+
+app.post('/pitchingStats',function(req,res){
+    var stats = req.body;
+    console.log(stats)
+    var final= {
+        pitchData: [],
+        resultData: {
+            values: [],
+            resultObj:[]
+        }
+    };
+
+    _.forEach(stats, function(year){
+        final.pitchData.push([{key: 'Strikes', value: year.stat.strikes},{key: 'Non-Strikes (Balls,Fouls,etc)', value: parseInt(year.stat.numberOfPitches-year.stat.strikes)}])
+        final.resultData.values.push([{key: 'Strike Outs', value: year.stat.strikeOuts},{key: 'Walks', value: year.stat.baseOnBalls},{key: 'Hits', value: year.stat.hits},{key: 'Gound Outs', value: year.stat.groundOuts},{key: 'Air Outs', value: year.stat.airOuts}])
+        var total  = year.stat.strikeOuts + year.stat.baseOnBalls + year.stat.hits + year.stat.groundOuts + year.stat.airOuts;
+        final.resultData.resultObj.push({
+            strP :(parseInt(year.stat.strikeOuts)/total*100).toFixed(0),
+            wlkP :(parseInt(year.stat.baseOnBalls)/total*100).toFixed(0),
+            hP :(parseInt(year.stat.hits)/total*100).toFixed(0),
+            goP :(parseInt(year.stat.groundOuts)/total*100).toFixed(0),
+            aoP :(parseInt(year.stat.airOuts)/total*100).toFixed(0)
+        })
+    })
+    console.log(final);
+    res.send(final);
+})
+
 app.get('/', function(req, res) {
   res.redirect('/');
 });
